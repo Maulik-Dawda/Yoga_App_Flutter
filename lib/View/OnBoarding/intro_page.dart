@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:yoga_app/View/yoga_home_screen.dart';
+import 'package:yoga_app/View/Main%20Pages/yoga_home_screen.dart';
 import 'package:yoga_app/Widgets/custom_intro_screen.dart';
 
 class IntroPage extends StatefulWidget {

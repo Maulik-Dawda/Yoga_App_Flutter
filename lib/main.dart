@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:yoga_app/View/dashboard.dart';
-import 'package:yoga_app/View/meditation_home_screen.dart';
-import 'package:yoga_app/View/OnBoarding/splash_screen.dart';
-import 'package:yoga_app/View/yoga_home_screen.dart';
+
 
 void main() {
   runApp(const MyApp());

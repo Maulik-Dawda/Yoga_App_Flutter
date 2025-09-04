@@ -51,7 +51,7 @@ class MeditationHomeScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.005),
                   SizedBox(
                     height: screenHeight * 0.27,
-                    child: CustomVerticalTabs(themeColor: AppColors.meditationTheme, vtab1: 'Sleep', vtab2: 'Relax', vtab3: 'Focus',)
+                    child: CustomVerticalTabs(themeColor: AppColors.meditationTheme, vtab1: 'Sleep', vtab2: 'Relax', vtab3: 'Focus', category: 'men')
                   ),
                   SizedBox(height: screenHeight * 0.005),
                   CustomSectionTitle(title: "Recommended For You"),
@@ -61,9 +61,9 @@ class MeditationHomeScreen extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       children: [
-                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth"),
-                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth"),
-                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth"),
+                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", onTap: () {  },),
+                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", onTap: () {  },),
+                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", onTap: () {  },),
                       ],
                     ),
                   ),
@@ -75,9 +75,9 @@ class MeditationHomeScreen extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       children: [
-                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated"),
-                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated"),
-                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated"),
+                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
+                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
+                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
                       ],
                     ),
                   ),
@@ -89,9 +89,9 @@ class MeditationHomeScreen extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       children: [
-                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated"),
-                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated"),
-                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated"),
+                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
+                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
+                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
                       ],
                     ),
                   ),

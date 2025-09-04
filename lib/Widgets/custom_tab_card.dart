@@ -4,50 +4,68 @@ class CustomTabCard extends StatelessWidget {
   final String image;
   final String title;
   final String subtitle;
+  final VoidCallback onTap;
   const CustomTabCard({
     super.key,
     required this.image,
     required this.title,
-    required this.subtitle,
+    required this.subtitle, required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            left: 12,
-            bottom: 30,
-            child: Text(
-              title,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14),
+    final screenWidth = MediaQuery.of(context).size.width;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: screenWidth * 0.3,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [Colors.black, Colors.transparent],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
-          Positioned(
-            left: 12,
-            bottom: 12,
-            child: Text(
-              subtitle,
-              style: const TextStyle(color: Colors.white70, fontSize: 12),
-            ),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: Stack(
+                  children: [
+                    Positioned(
+                      left: 12,
+                      top: 10,
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14),
+                      ),
+                    ),
+                    Positioned(
+                      left: 12,
+                      top: 30,
+                      child: Text(
+                        subtitle,
+                        style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                    ),
+                    const Positioned(
+                      left: 12,
+                      bottom: 12,
+                      child: Icon(Icons.play_circle_outline,
+                          color: Colors.white, size: 30),
+                    ),
+                  ],
+                ),
           ),
-          const Positioned(
-            right: 12,
-            bottom: 12,
-            child: Icon(Icons.play_circle_fill,
-                color: Colors.white, size: 28),
-          ),
-        ],
+        ),
       ),
     );
   }
