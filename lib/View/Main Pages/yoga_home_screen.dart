@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yoga_app/Controller/popular_yoga_list_controller.dart';
 import 'package:yoga_app/Controller/recommended_yoga_controller.dart';
 import 'package:yoga_app/Controller/weight_loss_yoga_controller.dart';
 import 'package:yoga_app/Themes/app_colors.dart';
+import 'package:yoga_app/View/Auth%20Pages/login.dart';
 import 'package:yoga_app/View/Detail%20Pages/popular_yoga_list.dart';
 import 'package:yoga_app/View/Detail%20Pages/weight_loss_yoga_list.dart';
 import 'package:yoga_app/View/Detail%20Pages/yoga_detail_screen.dart';
@@ -11,7 +13,7 @@ import 'package:yoga_app/Widgets/custom_large_card_bottom_title.dart';
 import 'package:yoga_app/Widgets/custom_medium_card_bottom_title.dart';
 import 'package:yoga_app/Widgets/custom_section_title.dart';
 import 'package:yoga_app/Widgets/custom_small_card_bottom_title.dart';
-import 'package:yoga_app/Widgets/custom_vertical_tabs.dart';
+import 'package:yoga_app/Widgets/custom_yoga_vertical_tabs.dart';
 
 class YogaHomeScreen extends StatelessWidget {
   YogaHomeScreen({super.key});
@@ -28,10 +30,22 @@ class YogaHomeScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.yogaTheme,
         title: const Text("Yoga", style: TextStyle(color: Colors.white)),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.more_vert, color: Colors.white),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (value) async {
+              if (value == 'logout') {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool("isLoggedIn", false);
+                Get.offAll(() => const Login());
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'logout',
+                child: Text('Logout'),
+              ),
+            ],
           ),
         ],
       ),
@@ -76,19 +90,21 @@ class YogaHomeScreen extends StatelessWidget {
                             physics: const NeverScrollableScrollPhysics(),
                             children: [
                               SizedBox(
-                                child: CustomVerticalTabs(
+                                child: CustomYogaVerticalTabs(
                                   themeColor: AppColors.yogaTheme,
                                   vtab1: 'New',
                                   vtab2: 'Skilled',
-                                  vtab3: 'Pro', category: 'women',
+                                  vtab3: 'Pro',
+                                  category: 'women',
                                 ),
                               ),
                               SizedBox(
-                                child: CustomVerticalTabs(
+                                child: CustomYogaVerticalTabs(
                                   themeColor: AppColors.yogaTheme,
                                   vtab1: 'New',
                                   vtab2: 'Skilled',
-                                  vtab3: 'Pro', category: 'men',
+                                  vtab3: 'Pro',
+                                  category: 'men',
                                 ),
                               ),
                             ],
@@ -102,9 +118,15 @@ class YogaHomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomSectionTitle(title: "Popular Yoga Exercise"),
-                      TextButton(onPressed: (){
-                        Get.to(() => const PopularYogaList());
-                      }, child: Text("See All",style: TextStyle(color: AppColors.yogaTheme),))
+                      TextButton(
+                        onPressed: () {
+                          Get.to(() => const PopularYogaList());
+                        },
+                        child: Text(
+                          "See All",
+                          style: TextStyle(color: AppColors.yogaTheme),
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(
@@ -119,20 +141,28 @@ class YogaHomeScreen extends StatelessWidget {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        itemCount: 10,
+                        itemCount: popularYogaListControllerList.popularYogaList.length,
                         itemBuilder: (context, index) {
                           final item = popularYogaListControllerList.popularYogaList[index];
                           return CustomSmallCardBottomTitle(
                             image: item.img ?? "",
                             title: item.title ?? "",
-                            subTitle: item.subCategory ?? "", onTap: () {Get.to(() => YogaDetailScreen(image: item.img ?? "", title: item.title ?? "", id: item.id ?? ""));},
+                            subTitle: item.category ?? "",
+                            onTap: () {
+                              Get.to(() => YogaDetailScreen(title: item.title ?? "", id: item.id ?? ""));
+                            },
                           );
                         },
                       );
                     }),
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "Recommended For You"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSectionTitle(title: "Recommended For You"),
+                    ],
+                  ),
                   SizedBox(
                     height: screenHeight * 0.15,
                     child: Obx(() {
@@ -151,7 +181,10 @@ class YogaHomeScreen extends StatelessWidget {
                           return CustomMediumCardBottomTitle(
                             image: item.img ?? "",
                             title: item.title ?? "",
-                            subTitle: item.subCategory ?? "", onTap: () {Get.to(() => YogaDetailScreen(image: item.img ?? "", title: item.title ?? "", id: item.id ?? ""));},
+                            subTitle: item.category ?? "",
+                            onTap: () {
+                              Get.to(() => YogaDetailScreen(title: item.title ?? "", id: item.id ?? ""));
+                            },
                           );
                         },
                       );
@@ -162,9 +195,15 @@ class YogaHomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomSectionTitle(title: "Yoga For Weight Loss"),
-                      TextButton(onPressed: (){
-                        Get.to(() => const WeightLossYogaList());
-                      }, child: Text("See All",style: TextStyle(color: AppColors.yogaTheme),),)
+                      TextButton(
+                        onPressed: () {
+                          Get.to(() => const WeightLossYogaList());
+                        },
+                        child: Text(
+                          "See All",
+                          style: TextStyle(color: AppColors.yogaTheme),
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(
@@ -179,13 +218,16 @@ class YogaHomeScreen extends StatelessWidget {
                       return ListView.builder(
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        itemCount: 10,
+                        itemCount: weightLossYogaControllerList.weightLossYogaList.length,
                         itemBuilder: (context, index) {
                           final item = weightLossYogaControllerList.weightLossYogaList[index];
                           return CustomLargeCardBottomTitle(
                             image: item.img ?? "",
                             title: item.title ?? "",
-                            subTitle: item.subCategory ?? "", onTap: () { Get.to(() => YogaDetailScreen(image: item.img ?? "", title: item.title ?? "", id: item.id ?? "")); },
+                            subTitle: item.category ?? "",
+                            onTap: () {
+                              Get.to(() => YogaDetailScreen(title: item.title ?? "", id: item.id ?? ""));
+                            },
                           );
                         },
                       );

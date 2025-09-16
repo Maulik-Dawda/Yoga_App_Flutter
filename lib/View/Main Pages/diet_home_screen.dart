@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yoga_app/Controller/popular_diet_controller.dart';
+import 'package:yoga_app/Controller/recommended_diet_controller.dart';
+import 'package:yoga_app/Controller/you_must_try_diet_controller.dart';
 import 'package:yoga_app/Themes/app_colors.dart';
+import 'package:yoga_app/View/Auth%20Pages/login.dart';
+import 'package:yoga_app/View/Detail%20Pages/diet_detail_screen.dart';
+import 'package:yoga_app/View/Detail%20Pages/popular_diet_list.dart';
+import 'package:yoga_app/View/Detail%20Pages/recommended_diet_list.dart';
+import 'package:yoga_app/View/Detail%20Pages/you_must_try_diet_list.dart';
+import 'package:yoga_app/Widgets/custom_diet_vertical_tabs.dart';
 import 'package:yoga_app/Widgets/custom_large_card_bottom_title.dart';
 import 'package:yoga_app/Widgets/custom_medium_card_bottom_title.dart';
 import 'package:yoga_app/Widgets/custom_section_title.dart';
 import 'package:yoga_app/Widgets/custom_small_card_bottom_title.dart';
-import 'package:yoga_app/Widgets/custom_vertical_tabs.dart';
 
 class DietHomeScreen extends StatelessWidget {
-  const DietHomeScreen({super.key});
+  DietHomeScreen({super.key});
+
+  final RecommendedDietController recommendedDietController = Get.put(RecommendedDietController());
+  final PopularDietController popularDietController = Get.put(PopularDietController());
+  final YouMustTryDietController youMustTryDietController = Get.put(YouMustTryDietController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +33,23 @@ class DietHomeScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.dietTheme,
         title: const Text("Diet",style: TextStyle(color: Colors.white),),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.more_vert, color: Colors.white),
-          )
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (value) async {
+              if (value == 'logout') {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool("isLoggedIn", false);
+                Get.offAll(() => const Login());
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'logout',
+                child: Text('Logout'),
+              ),
+            ],
+          ),
         ],
       ),
       body: Column(
@@ -51,50 +78,115 @@ class DietHomeScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.005),
                   SizedBox(
                       height: screenHeight * 0.27,
-                      child: CustomVerticalTabs(themeColor: AppColors.dietTheme, vtab1: 'Sleep', vtab2: 'Relax', vtab3: 'Focus', category: 'men',)
+                      child: CustomDietVerticalTabs(themeColor: AppColors.dietTheme, vtab1: 'Breakfast', vtab2: 'Lunch', vtab3: 'Dinner')
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "Recommended For You"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSectionTitle(title: "Recommended For You"),
+                      TextButton(onPressed: (){
+                        Get.to(() => const RecommendedDietList());
+                      }, child: Text("See All",style: TextStyle(color: AppColors.dietTheme),))
+                    ],
+                  ),
                   SizedBox(
                     height: screenHeight * 0.12,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      children: [
-                        CustomSmallCardBottomTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", subTitle: '10 mins', onTap: () {  },),
-                        CustomSmallCardBottomTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", subTitle: '10 mins', onTap: () {  },),
-                        CustomSmallCardBottomTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", subTitle: '10 mins', onTap: () {  },),
-                      ],
-                    ),
+                    child: Obx(() {
+                      if (recommendedDietController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (recommendedDietController.recommendedDietList.isEmpty) {
+                        return const Center(child: Text("No Data"));
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          final item = recommendedDietController.recommendedDietList[index];
+                          return CustomSmallCardBottomTitle(
+                            image: item.img ?? "",
+                            title: item.title ?? "",
+                            subTitle: item.category ?? "",
+                            onTap: () {Get.to(() => DietDetailScreen(title: item.title ?? "", id: item.id ?? ""));},
+
+                          );
+                        },
+                      );
+                    }),
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "Favourite"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSectionTitle(title: "You Must Try"),
+                      TextButton(onPressed: (){
+                        Get.to(() => const YouMustTryDietList());
+                      }, child: Text("See All",style: TextStyle(color: AppColors.dietTheme),))
+                    ],
+                  ),
                   SizedBox(
                     height: screenHeight * 0.15,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      children: [
-                        CustomMediumCardBottomTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", subTitle: "10 min", onTap: () {  },),
-                        CustomMediumCardBottomTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", subTitle: "10 min", onTap: () {  },),
-                        CustomMediumCardBottomTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", subTitle: "10 min", onTap: () {  },),
+                    child: Obx(() {
+                      if (youMustTryDietController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (youMustTryDietController.youMustTryDietList.isEmpty) {
+                        return const Center(child: Text("No Data"));
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          final item = youMustTryDietController.youMustTryDietList[index];
+                          return CustomMediumCardBottomTitle(
+                            image: item.img ?? "",
+                            title: item.title ?? "",
+                            subTitle: item.category ?? "",
+                            onTap: () {Get.to(() => DietDetailScreen(title: item.title ?? "", id: item.id ?? ""));},
 
-                      ],
-                    ),
+                          );
+                        },
+                      );
+                    }),
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "New"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSectionTitle(title: "Popular"),
+                      TextButton(onPressed: (){
+                        Get.to(() => const PopularDietList());
+                      }, child: Text("See All",style: TextStyle(color: AppColors.dietTheme),))
+                    ],
+                  ),
                   SizedBox(
                     height: screenHeight * 0.20,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      children: [
-                        CustomLargeCardBottomTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", subTitle: '10 min', onTap: () {  },),
-                        CustomLargeCardBottomTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", subTitle: '10 min', onTap: () {  },),
-                        CustomLargeCardBottomTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", subTitle: '10 min', onTap: () {  },),
-                      ],
-                    ),
+                    child: Obx(() {
+                      if (popularDietController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (popularDietController.popularDietList.isEmpty) {
+                        return const Center(child: Text("No Data"));
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          final item = popularDietController.popularDietList[index];
+                          return CustomLargeCardBottomTitle(
+                            image: item.img ?? "",
+                            title: item.title ?? "",
+                            subTitle: item.category ?? "",
+                            onTap: () {Get.to(() => DietDetailScreen(title: item.title ?? "", id: item.id ?? ""));},
+
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ],
               ),

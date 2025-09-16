@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:yoga_app/Widgets/custom_yoga_list_tab.dart';
 
-class CustomVerticalTabs extends StatelessWidget {
+class CustomYogaVerticalTabs extends StatelessWidget {
   final Color themeColor;
   final String category;
   final String vtab1;
   final String vtab2;
   final String vtab3;
 
-  const CustomVerticalTabs({
+  const CustomYogaVerticalTabs({
     super.key,
     required this.themeColor,
     required this.category,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:yoga_app/View/Main%20Pages/yoga_home_screen.dart';
+import 'package:yoga_app/Themes/app_colors.dart';
+import 'package:yoga_app/View/Auth%20Pages/login.dart';
 import 'package:yoga_app/Widgets/custom_intro_screen.dart';
 
 class IntroPage extends StatefulWidget {
@@ -54,11 +55,11 @@ class _IntroPageState extends State<IntroPage> {
             child: isLastPage
                 ? ElevatedButton(
               onPressed: () {
-               Get.to(() => YogaHomeScreen());
+               Get.to(() => Login());
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Color(0xFF6A5ACD),
+                backgroundColor: AppColors.meditationTheme,
                 padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -72,11 +73,11 @@ class _IntroPageState extends State<IntroPage> {
                 : SmoothPageIndicator(
               controller: controller,
               count: 3,
-              effect: const WormEffect(
+              effect: WormEffect(
                 spacing: 20,
                 dotHeight: 10,
                 dotWidth: 10,
-                activeDotColor: Color(0xFF6A5ACD),
+                activeDotColor: AppColors.meditationTheme,
               ),
             ),
           ),

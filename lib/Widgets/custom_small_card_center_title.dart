@@ -20,7 +20,6 @@ class CustomSmallCardCenterTitle extends StatelessWidget {
         ),
         child: Container(
           alignment: Alignment.bottomLeft,
-          padding: EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
@@ -31,7 +30,7 @@ class CustomSmallCardCenterTitle extends StatelessWidget {
           ),
           child: Align(
               alignment: Alignment.center,
-              child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),textAlign: TextAlign.center,)),
+              child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),textAlign: TextAlign.center,)),
         ),
       ),
     );

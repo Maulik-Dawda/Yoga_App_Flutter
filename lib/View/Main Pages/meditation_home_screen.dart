@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yoga_app/Controller/new_meditation_controller.dart';
+import 'package:yoga_app/Controller/recommended_meditation_controller.dart';
 import 'package:yoga_app/Themes/app_colors.dart';
+import 'package:yoga_app/View/Auth%20Pages/login.dart';
+import 'package:yoga_app/View/Detail%20Pages/meditation_detail_screen.dart';
+import 'package:yoga_app/View/Detail%20Pages/new_meditation_list.dart';
+import 'package:yoga_app/View/Detail%20Pages/recommended_meditation_list.dart';
 import 'package:yoga_app/Widgets/custom_large_card_center_title.dart';
-import 'package:yoga_app/Widgets/custom_medium_card_center_title.dart';
+import 'package:yoga_app/Widgets/custom_meditation_vertical_tabs.dart';
 import 'package:yoga_app/Widgets/custom_section_title.dart';
 import 'package:yoga_app/Widgets/custom_small_card_center_title.dart';
-import 'package:yoga_app/Widgets/custom_vertical_tabs.dart';
 
 class MeditationHomeScreen extends StatelessWidget {
-  const MeditationHomeScreen({super.key});
+  MeditationHomeScreen({super.key});
+
+  final NewMeditationController newMeditationController = Get.put(NewMeditationController());
+  final RecommendedMeditationController recommendedMeditationController = Get.put(RecommendedMeditationController());
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +28,23 @@ class MeditationHomeScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.meditationTheme,
         title: const Text("Meditation",style: TextStyle(color: Colors.white),),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.more_vert, color: Colors.white),
-          )
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert, color: Colors.white),
+            onSelected: (value) async {
+              if (value == 'logout') {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool("isLoggedIn", false);
+                Get.offAll(() => const Login());
+              }
+            },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: 'logout',
+                child: Text('Logout'),
+              ),
+            ],
+          ),
         ],
       ),
       body: Column(
@@ -51,49 +73,75 @@ class MeditationHomeScreen extends StatelessWidget {
                   SizedBox(height: screenHeight * 0.005),
                   SizedBox(
                     height: screenHeight * 0.27,
-                    child: CustomVerticalTabs(themeColor: AppColors.meditationTheme, vtab1: 'Sleep', vtab2: 'Relax', vtab3: 'Focus', category: 'men')
+                    child: CustomMeditationVerticalTabs(themeColor: AppColors.meditationTheme, vtab1: 'Sleep', vtab2: 'Relax', vtab3: 'Focus')
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "Recommended For You"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSectionTitle(title: "Recommended For You"),
+                      TextButton(onPressed: (){
+                        Get.to(() => const RecommendedMeditationList());
+                      }, child: Text("See All",style: TextStyle(color: AppColors.meditationTheme),))
+                    ],
+                  ),
                   SizedBox(
                     height: screenHeight * 0.12,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      children: [
-                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", onTap: () {  },),
-                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", onTap: () {  },),
-                        CustomSmallCardCenterTitle(image: "https://i.pinimg.com/736x/7f/d8/61/7fd86174f6b02b30b27560a212957249.jpg", title: "Mind Growth", onTap: () {  },),
-                      ],
-                    ),
+                    child: Obx(() {
+                      if (recommendedMeditationController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (recommendedMeditationController.recommendedMeditationList.isEmpty) {
+                        return const Center(child: Text("No Data"));
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          final item = recommendedMeditationController.recommendedMeditationList[index];
+                          return CustomSmallCardCenterTitle(
+                            image: item.img ?? "",
+                            title: item.title ?? "",
+                            onTap: () {Get.to(() => MeditationDetailScreen(title: item.title ?? "", id: item.id ?? ""));},
+                          );
+                        },
+                      );
+                    }),
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "Favourite"),
-                  SizedBox(
-                    height: screenHeight * 0.15,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      children: [
-                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
-                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
-                        CustomMediumCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomSectionTitle(title: "New"),
+                      TextButton(onPressed: (){
+                        Get.to(() => const NewMeditationList());
+                      }, child: Text("See All",style: TextStyle(color: AppColors.meditationTheme),))
+                    ],
                   ),
-                  SizedBox(height: screenHeight * 0.005),
-                  CustomSectionTitle(title: "New"),
                   SizedBox(
                     height: screenHeight * 0.20,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      children: [
-                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
-                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
-                        CustomLargeCardCenterTitle(image: "https://i.pinimg.com/736x/71/b1/89/71b189c16bcc54f17f0af121cfbe3c2a.jpg", title: "Get Motivated", onTap: () {  },),
-                      ],
-                    ),
+                    child: Obx(() {
+                      if (newMeditationController.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (newMeditationController.newMeditationList.isEmpty) {
+                        return const Center(child: Text("No Data"));
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          final item = newMeditationController.newMeditationList[index];
+                          return CustomLargeCardCenterTitle(
+                            image: item.img ?? "",
+                            title: item.title ?? "",
+                            onTap: () {Get.to(() => MeditationDetailScreen(title: item.title ?? "", id: item.id ?? ""));},
+                          );
+                        },
+                      );
+                    }),
                   ),
                 ],
               ),

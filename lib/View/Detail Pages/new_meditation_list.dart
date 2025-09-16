@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yoga_app/Controller/popular_yoga_list_controller.dart';
+import 'package:yoga_app/Controller/new_meditation_controller.dart';
 import 'package:yoga_app/Themes/app_colors.dart';
-import 'package:yoga_app/View/Detail%20Pages/yoga_detail_screen.dart';
+import 'package:yoga_app/View/Detail%20Pages/meditation_detail_screen.dart';
 
-class PopularYogaList extends StatelessWidget {
-  const PopularYogaList({super.key});
+class NewMeditationList extends StatelessWidget {
+  const NewMeditationList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final PopularYogaListController controller = Get.put(PopularYogaListController());
+    final NewMeditationController controller = Get.put(NewMeditationController());
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: AppColors.yogaTheme,
+        backgroundColor: AppColors.meditationTheme,
         elevation: 0,
         title: const Text(
-          "Popular Yoga",
+          "New Meditation",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -27,14 +27,14 @@ class PopularYogaList extends StatelessWidget {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (controller.popularYogaList.isEmpty) {
+        if (controller.newMeditationList.isEmpty) {
           return const Center(
-              child: Text("No Yoga Data", style: TextStyle(fontSize: 16)));
+              child: Text("No Meditation Data", style: TextStyle(fontSize: 16)));
         }
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: GridView.builder(
-            itemCount: controller.popularYogaList.length,
+            itemCount: controller.newMeditationList.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -42,7 +42,7 @@ class PopularYogaList extends StatelessWidget {
               childAspectRatio: 0.8,
             ),
             itemBuilder: (context, index) {
-              final item = controller.popularYogaList[index];
+              final item = controller.newMeditationList[index];
               return GestureDetector(
                 onTap: () {
                   // Navigate to next meditation detail screen
@@ -50,7 +50,7 @@ class PopularYogaList extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          YogaDetailScreen(
+                          MeditationDetailScreen(
                             title: item.title ?? "",
                             id: item.id ?? "",
                           ),
@@ -92,7 +92,7 @@ class PopularYogaList extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "${item.subCategory ?? ""} | ${item.category ?? ""}",
+                              item.category ?? "",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[600],

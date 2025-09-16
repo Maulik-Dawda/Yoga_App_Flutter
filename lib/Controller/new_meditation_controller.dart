@@ -1,32 +1,31 @@
 import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:yoga_app/Model/yoga_list_model.dart';
+import 'package:yoga_app/Model/meditation_list_model.dart';
 
-class RecommendedYogaController extends GetxController {
-  RxList<YogaListModel> recommendedYogaList =
-      <YogaListModel>[].obs;
+class NewMeditationController extends GetxController {
+  RxList<MeditationListModel> newMeditationList =
+      <MeditationListModel>[].obs;
   RxBool isLoading = true.obs;
 
   @override
   void onInit() {
-    getRecommendedYogaList();
+    getNewMeditationList();
     super.onInit();
   }
 
-  Future<void> getRecommendedYogaList() async {
+  Future<void> getNewMeditationList() async {
     try {
       isLoading.value = true;
 
       var response = await http.get(
-        Uri.parse("https://mapi.trycatchtech.com/v3/yoga_app/recommended_yoga"),
+        Uri.parse("https://mapi.trycatchtech.com/v3/yoga_app/new_meditation"),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
-        recommendedYogaList.assignAll(
-          jsonList.map((json) => YogaListModel.fromJson(json)).toList(),
+        newMeditationList.assignAll(
+          jsonList.map((json) => MeditationListModel.fromJson(json)).toList(),
         );
       }
     } catch (e) {

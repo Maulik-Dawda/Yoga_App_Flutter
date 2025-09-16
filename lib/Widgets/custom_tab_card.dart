@@ -25,6 +25,7 @@ class CustomTabCard extends StatelessWidget {
           image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
         ),
         child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
@@ -38,7 +39,6 @@ class CustomTabCard extends StatelessWidget {
             child: Stack(
                   children: [
                     Positioned(
-                      left: 12,
                       top: 10,
                       child: Text(
                         title,
@@ -49,7 +49,6 @@ class CustomTabCard extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      left: 12,
                       top: 30,
                       child: Text(
                         subtitle,
@@ -57,7 +56,6 @@ class CustomTabCard extends StatelessWidget {
                       ),
                     ),
                     const Positioned(
-                      left: 12,
                       bottom: 12,
                       child: Icon(Icons.play_circle_outline,
                           color: Colors.white, size: 30),

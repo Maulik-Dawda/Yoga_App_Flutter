@@ -20,6 +20,7 @@ class CustomLargeCardBottomTitle extends StatelessWidget {
           image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
         ),
         child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             gradient: LinearGradient(
@@ -33,7 +34,6 @@ class CustomLargeCardBottomTitle extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned(
-                  left: 12,
                   bottom: 30,
                   child: Text(
                     title,
@@ -44,7 +44,6 @@ class CustomLargeCardBottomTitle extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                  left: 12,
                   bottom: 12,
                   child: Text(
                     subTitle,
